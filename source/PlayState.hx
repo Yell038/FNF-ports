@@ -2026,7 +2026,7 @@ class PlayState extends MusicBeatState
 	{
 		// HOLDING
 
-		#if mobile
+		#if html5
 
 		var up = mcontrols.UP;
 		var right = mcontrols.RIGHT;
