@@ -1,10 +1,7 @@
-# droid on the web
-here it's a fnf mobile source code that
-* made specifically for web
-* controls that only work on html5 LOL
-* is optimized yay
+# hidden attraction html5
+og mod - https://gamebanana.com/mods/416852
 
-original made by luckydog7
+engine made by luckydog7
 https://github.com/luckydog7/Funkin-android/
 
 
