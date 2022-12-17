@@ -139,7 +139,6 @@ class PlayState extends MusicBeatState
 	var detailsPausedText:String = "";
 	#end
 
-	
 	#if html5
 	var mcontrols:Mobilecontrols; 
 	var _pad:ui.FlxVirtualPad;
@@ -562,32 +561,25 @@ class PlayState extends MusicBeatState
 		                            add(waveSpriteFG);
 		                    */
 		          }
+				  case 'attraction':
+				  {
+					defaultCamZoom = 0.6;
+		            curStage = 'stagemain';
+		            var bg:FlxSprite = new FlxSprite(900, 458).loadGraphic(Paths.image('bg'));
+		            bg.antialiasing = true;
+		            bg.scale.set(3, 3);
+		            bg.active = false;
+		            add(bg);
+				  }
 		          default:
 		          {
-		                  defaultCamZoom = 0.9;
-		                  curStage = 'stage';
-		                  var bg:FlxSprite = new FlxSprite(-600, -200).loadGraphic(Paths.image('stageback'));
-		                  bg.antialiasing = true;
-		                  bg.scrollFactor.set(0.9, 0.9);
-		                  bg.active = false;
-		                  add(bg);
-
-		                  var stageFront:FlxSprite = new FlxSprite(-650, 600).loadGraphic(Paths.image('stagefront'));
-		                  stageFront.setGraphicSize(Std.int(stageFront.width * 1.1));
-		                  stageFront.updateHitbox();
-		                  stageFront.antialiasing = true;
-		                  stageFront.scrollFactor.set(0.9, 0.9);
-		                  stageFront.active = false;
-		                  add(stageFront);
-
-		                  var stageCurtains:FlxSprite = new FlxSprite(-500, -300).loadGraphic(Paths.image('stagecurtains'));
-		                  stageCurtains.setGraphicSize(Std.int(stageCurtains.width * 0.9));
-		                  stageCurtains.updateHitbox();
-		                  stageCurtains.antialiasing = true;
-		                  stageCurtains.scrollFactor.set(1.3, 1.3);
-		                  stageCurtains.active = false;
-
-		                  add(stageCurtains);
+					defaultCamZoom = 0.6;
+		            curStage = 'stage';
+		            var bg:FlxSprite = new FlxSprite(0, 0).loadGraphic(Paths.image('bg'));
+		            bg.antialiasing = true;
+		            bg.scale.set(3, 3);
+		            bg.active = false;
+		            add(bg);
 		          }
               }
 
@@ -634,6 +626,8 @@ class PlayState extends MusicBeatState
 				dad.y += 130;
 			case 'dad':
 				camPos.x += 400;
+			case 'fq':
+				camPos.y += 400;
 			case 'pico':
 				camPos.x += 600;
 				dad.y += 300;
@@ -689,13 +683,18 @@ class PlayState extends MusicBeatState
 				boyfriend.y += 220;
 				gf.x += 180;
 				gf.y += 300;
+			case 'stagemain':
+				boyfriend.x = 1600;
+				boyfriend.y = 559;
+				dad.x = 700;
+				dad.y = 1000;
 		}
-
-		add(gf);
 
 		// Shitty layering but whatev it works LOL
 		if (curStage == 'limo')
 			add(limo);
+
+		boyfriend.scale.set(2, 2);
 
 		add(dad);
 		add(boyfriend);
@@ -780,7 +779,7 @@ class PlayState extends MusicBeatState
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'health', 0, 2);
 		healthBar.scrollFactor.set();
-		healthBar.createFilledBar(0xFFFF0000, 0xFF66FF33);
+		healthBar.createFilledBar(0xFFFF9900, 0xFFFFCC99);
 		// healthBar
 		add(healthBar);
 
@@ -1423,6 +1422,8 @@ class PlayState extends MusicBeatState
 		var enterPressed = FlxG.keys.justPressed.ENTER;
 		#end
 
+		#if html5
+
 		if ((_pad.buttonB2.justPressed || enterPressed) && startedCountdown && canPause)
 		{
 			persistentUpdate = false;
@@ -1437,11 +1438,28 @@ class PlayState extends MusicBeatState
 			}
 			else
 				openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
-		
-			#if desktop
-			DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
-			#end
 		}
+		#else
+		if ((enterPressed) && startedCountdown && canPause)
+			{
+				persistentUpdate = false;
+				persistentDraw = true;
+				paused = true;
+	
+				// 1 / 1000 chance for Gitaroo Man easter egg
+				if (FlxG.random.bool(0.1))
+				{
+					// gitaroo man easter egg
+					FlxG.switchState(new GitarooPause());
+				}
+				else
+					openSubState(new PauseSubState(boyfriend.getScreenPosition().x, boyfriend.getScreenPosition().y));
+			
+				#if desktop
+				DiscordClient.changePresence(detailsPausedText, SONG.song + " (" + storyDifficultyText + ")", iconRPC);
+				#end
+			}
+		#end
 
 		if (FlxG.keys.justPressed.SEVEN)
 		{
@@ -2008,7 +2026,7 @@ class PlayState extends MusicBeatState
 	{
 		// HOLDING
 
-		#if html5
+		#if mobile
 
 		var up = mcontrols.UP;
 		var right = mcontrols.RIGHT;
@@ -2275,15 +2293,6 @@ class PlayState extends MusicBeatState
 		var downP = controls.DOWN_P;
 		var leftP = controls.LEFT_P;
 		#end
-
-		if (leftP)
-			noteMiss(0);
-		if (downP)
-			noteMiss(1);
-		if (upP)
-			noteMiss(2);
-		if (rightP)
-			noteMiss(3);
 	}
 
 	function noteCheck(keyP:Bool, note:Note):Void
@@ -2443,23 +2452,14 @@ class PlayState extends MusicBeatState
 		{
 			// dad.dance();
 		}
-		
-		/* These are some basic mid-song events. REMOVE THIS TEXT!
 
 		switch (curSong) {
-			case 'yoursonghere':
+			case 'attraction':
 				switch (curStep) {
-					case 128: //This is the curStep found in the Debug Menu. This is how events are timed.
-
-						//Camera zoom
-						defaultCamZoom = 1.2; 
-
-						//Change Character
-						remove(dad); //values are dad, bf, gf
-						dad = new Character(100, 100 'yourcharacter');
-						add(dad);
+					case 252: //This is the curStep found in the Debug Menu. This is how events are timed.
+					boyfriend.playAnim('gay', true);
 				}
-		} Remove this when you're done. > */ 
+		}
 	}
 
 	var lightningStrikeBeat:Int = 0;

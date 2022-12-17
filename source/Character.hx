@@ -298,6 +298,44 @@ class Character extends FlxSprite
 
 				flipX = true;
 
+			case 'mania':
+				var tex = Paths.getSparrowAtlas('characters/mania');
+				frames = tex;
+				animation.addByPrefix('idle', 'idle', 24, false);
+				animation.addByPrefix('singUP', 'up', 24, false);
+				animation.addByPrefix('singLEFT', 'right', 24, false);
+				animation.addByPrefix('singRIGHT', 'left', 24, false);
+				animation.addByPrefix('singDOWN', 'down', 24, false);
+				animation.addByPrefix('gay', 'gayass', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", -45, 51);
+				addOffset("singRIGHT", -106, 3);
+				addOffset("singLEFT", 26, -7);
+				addOffset("singDOWN", -10, -39);
+				addOffset("gay", -46, 0);
+
+				playAnim('idle');
+
+				flipX = true;
+
+			case 'fq':
+				var tex = Paths.getSparrowAtlas('characters/fq');
+				frames = tex;
+				animation.addByPrefix('idle', 'idle', 24, false);
+				animation.addByPrefix('singUP', 'up', 24, false);
+				animation.addByPrefix('singLEFT', 'left', 24, false);
+				animation.addByPrefix('singRIGHT', 'right', 24, false);
+				animation.addByPrefix('singDOWN', 'down', 24, false);
+
+				addOffset('idle');
+				addOffset("singUP", 55, 1);
+				addOffset("singRIGHT", -46, -54);
+				addOffset("singLEFT", -4, 30);
+				addOffset("singDOWN", -90, 1);
+
+				playAnim('idle');
+				
 			case 'bf':
 				var tex = Paths.getSparrowAtlas('characters/BOYFRIEND');
 				frames = tex;
